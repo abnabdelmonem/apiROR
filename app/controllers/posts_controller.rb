@@ -1,20 +1,20 @@
 class PostsController < ApplicationController
-  before_action :set_post, only: [:show, :update, :destroy]
   before_action :require_login
   
   # GET /posts
   def index
-    @user = User.find_by(id: current_user_status["user_id"])
-    if @user.role == "admin"
-      render json: Post.all
-    else
-      render json: @user.posts
-    end
+    @posts = Post.set_avaliable_posts(current_user_status)
+    render json: @posts
   end
 
   # GET /posts/1
   def show
-    render json: @post
+    @post = Post.avaliable_to_show(params[:id],current_user_status)
+    if @post.nil?
+      render json: {error: 'you have no access to this post'}, status: :unauthorized
+    else
+      render json: @post
+    end
   end
 
   # POST /posts
@@ -29,35 +29,29 @@ class PostsController < ApplicationController
 
   # PATCH/PUT /posts/1
   def update
-    if @post.update(post_params)
-      render json: @post
+    @post = Post.avaliable_to_update(params[:id],current_user_status)
+    if @post.nil?
+      render json: {error: 'only owner can update this post'}, status: :unauthorized
     else
-      render json: @post.errors, status: :unprocessable_entity
+      if @post.update(post_params)
+        render json: @post
+      else
+        render json: @post.errors, status: :unprocessable_entity
+      end
     end
   end
 
   # DELETE /posts/1
   def destroy
-    @post.destroy
+    @post = Post.avaliable_to_delete(params[:id],current_user_status)
+    if @post.nil?
+      render json: {error: 'only admin can delete a post'}, status: :unauthorized
+    else
+      @post.destroy
+    end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_post
-      @post = Post.find(params[:id])
-
-      user_status = current_user_status
-
-      if (@post.user_id == user_status["user_id"]) && (user_status["aud"] != ["admin"]) 
-        @post
-      elsif user_status["aud"] == ["admin"]
-        @post
-      else
-        render json: {error: 'Unauthorized'}, status: :unauthorized
-      end
-
-    end
-
     # Only allow a list of trusted parameters through.
     def post_params
       i = current_user_status["user_id"]

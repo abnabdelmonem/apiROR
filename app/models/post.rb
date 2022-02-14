@@ -1,6 +1,8 @@
 class Post < ApplicationRecord
   belongs_to :user
 
+  has_many :comments, dependent: :destroy
+
   validates :message,
             presence: true,
             length: { maximum: 350 }
@@ -41,7 +43,7 @@ class Post < ApplicationRecord
 
     def self.avaliable_to_delete(post_id, current_user_status)
       user_role = current_user_status["aud"]
-      puts(user_role)
+
       if user_role == ["admin"]
         @post = Post.find(post_id)
       else

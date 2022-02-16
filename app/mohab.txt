@@ -2,7 +2,7 @@ user update its own posts admin not /***/
 user can't delete his own posts but admin can delete all /***/
 user can see all his posts and only published posts of others /***/
 admin can see all posts published or not published /***/
-comments on posts
+comments on posts /***/
 reply for comments
 reactions on posts
 reactions on comments

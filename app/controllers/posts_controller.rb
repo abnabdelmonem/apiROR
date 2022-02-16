@@ -13,7 +13,7 @@ class PostsController < ApplicationController
     if @post.nil?
       render json: {error: 'you have no access to this post'}, status: :unauthorized
     else
-      render json: @post
+      render json: @post, include: ['comments', 'comments.replies']
     end
   end
 

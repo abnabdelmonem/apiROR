@@ -1,8 +1,15 @@
 class PostPolicy < ApplicationPolicy
+  def destroy?
+    @user.admin?
+  end
+  
   class Scope < Scope
-    # NOTE: Be explicit about which records you allow access to!
-    # def resolve
-    #   scope.all
-    # end
+    def resolve
+      if @user.admin?
+        scope.all
+      else
+        scope.where(published: true).or(scope.where(user_id: @user.id))
+      end
+    end
   end
 end

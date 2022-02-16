@@ -6,16 +6,4 @@ class Comment < ApplicationRecord
 
   validates :body, presence: :true
 
-    private
-    def self.avaliable_to_delete(comment_id, post_author_id, current_user_status)
-      @comment = Comment.find(comment_id)
-      if (current_user_status["aud"] == ["admin"] ||
-          @comment.user_id == current_user_status["user_id"] ||
-          post_author_id == current_user_status["user_id"])
-
-        @comment
-      else
-        nil
-      end
-    end
 end

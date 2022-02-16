@@ -1,6 +1,7 @@
 class RepliesController < ApplicationController
     before_action :require_login
     before_action :has_access?
+    before_action :find_reply, except: [:index, :create]
 
     def index
         @replies = @post.comments.find(params[:comment_id]).replies
@@ -9,47 +10,32 @@ class RepliesController < ApplicationController
 
     def create
         @reply = Reply.new(replies_params)
-        if @reply.save
-            render json: @reply
-        else
-            render json: @reply.errors, status: :unprocessable_entity
-        end
+        @reply.save!
+        render json: @reply
     end
 
     def update
-        @reply = Reply.find(params[:id])
-        if @reply.user_id == current_user_status["user_id"]
-
-            if @reply.update(replies_params)
-                render json: @reply
-            else
-                render json: @reply.errors, status: :unprocessable_entity
-            end
-            
-        else
-            render json: {error: 'you can not edit this reply'}, status: :unauthorized
-        end
+        authorize @reply
+        @reply.update!(replies_params)
+        render json: @reply 
     end
 
     def destroy
-        @reply = Reply.avaliable_to_delete(params[:id], @post.user_id, current_user_status)
-        if @reply.nil?
-            render json: {error: 'you can not delete this reply'}, status: :unauthorized
-        else
-            @reply.destroy
-        end
+        authorize @reply
+        @reply.destroy
     end
 
     private
     def has_access?
-        @post = Post.avaliable_to_show(params[:post_id], current_user_status)
-        if @post.nil?
-            render json: {error: 'you can not access this post'}, status: :unauthorized
-        end
-        @post
+        @post = Post.find(params[:post_id])
+        authorize @post, :show?
     end
 
     def replies_params
-        params.permit(:body, :comment_id).merge(user_id: current_user_status["user_id"])
+        params.permit(:body, :comment_id).merge(user_id: @user.id)
+    end
+
+    def find_reply
+        @reply = Reply.find(params[:id])
     end
 end

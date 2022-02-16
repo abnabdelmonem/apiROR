@@ -8,34 +8,18 @@ class ApplicationPolicy
     @record = record
   end
 
-  def index?
-    false
+  def recordAuthor?
+    @user.id == @record.user_id
   end
 
   def show?
-    false
-  end
-
-  def create?
-    false
-  end
-
-  def new?
-    create?
+    recordAuthor?|| @user.admin?|| @record.published?
   end
 
   def update?
-    false
+    recordAuthor?
   end
-
-  def edit?
-    update?
-  end
-
-  def destroy?
-    false
-  end
-
+  
   class Scope
     def initialize(user, scope)
       @user = user

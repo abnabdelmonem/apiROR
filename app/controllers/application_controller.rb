@@ -1,4 +1,8 @@
 class ApplicationController < ActionController::API
+    include Pundit::Authorization
+
+    rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+
     private
     def encode_token(payload)
         JWT.encode(payload, "secret code", 'HS256')
@@ -16,10 +20,18 @@ class ApplicationController < ActionController::API
         rescue #JWT::VerificationError
             return nil
         end
-        payload
+        @user = User.find(payload["user_id"])
+    end
+
+    def current_user
+        @user
     end
 
     def require_login
         render json: {error: 'Unauthorized'}, status: :unauthorized if !client_has_valid_token?
+    end
+
+    def user_not_authorized
+        render json: {error: 'You are not authorized to perform this action.'}, status: :unauthorized
     end
 end

@@ -1,8 +1,8 @@
 class UsersController < ApplicationController
     def create
-        @user = User.create(user_params)
+        @user = User.create!(user_params)
         if @user.valid?
-            payload = {user_id: @user.id, aud: [@user.role]}
+            payload = {user_id: @user.id}
             token = encode_token(payload)
             render json: {user: @user, token: token}
         else
@@ -15,7 +15,7 @@ class UsersController < ApplicationController
 
         if @user && @user.authenticate(params[:password])
 
-            payload = {user_id: @user.id, aud: [@user.role]}
+            payload = {user_id: @user.id}
 
             token = encode_token(payload)
             render json: {user: @user, token: token}

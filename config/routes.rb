@@ -1,7 +1,12 @@
 Rails.application.routes.draw do
-  resources :posts do
-    resources :comments do
-      resources :replies , :except => [:show]
+
+  concern :reactable do
+    resources :reactions, :except => [:show, :update]
+  end
+
+  resources :posts, concerns: :reactable do
+    resources :comments, concerns: :reactable  do
+      resources :replies, concerns: :reactable , :except => [:show]
     end
   end
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html

@@ -3,6 +3,8 @@ class User < ApplicationRecord
 
     has_many :posts, dependent: :destroy
 
+    has_many :reactions, dependent: :destroy
+
     enum role: %i[user admin].freeze
 
     validates :username,

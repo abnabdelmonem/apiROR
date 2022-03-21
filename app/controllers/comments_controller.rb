@@ -12,8 +12,7 @@ class CommentsController < ApplicationController
     end
 
     def create
-        @comment = Comment.new(comments_params)
-        @comment.save!
+        @comment = Comment.create!(comments_params)
         render json: @comment
     end
 

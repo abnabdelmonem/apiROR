@@ -9,8 +9,7 @@ class RepliesController < ApplicationController
     end
 
     def create
-        @reply = Reply.new(replies_params)
-        @reply.save!
+        @reply = Reply.create!(replies_params)
         render json: @reply
     end
 

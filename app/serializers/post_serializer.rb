@@ -1,5 +1,6 @@
 class PostSerializer < ActiveModel::Serializer
   attributes :id, :creator, :privacy, :message
+  has_many :reactions
   has_many :comments
 
   def creator

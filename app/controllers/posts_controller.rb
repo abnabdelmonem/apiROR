@@ -11,13 +11,12 @@ class PostsController < ApplicationController
   # GET /posts/1
   def show
     authorize @post
-    render json: @post, include: ['comments', 'comments.replies']
+    render json: @post, include: ['comments', 'comments.replies','reactions']
   end
 
   # POST /posts
   def create
-    @post = Post.new(post_params)
-    @post.save!
+    @post = Post.create!(post_params)
     render json: @post
   end
 

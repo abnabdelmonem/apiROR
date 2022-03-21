@@ -19,6 +19,10 @@ class ApplicationPolicy
   def update?
     recordAuthor?
   end
+
+  def destroy?
+    recordAuthor?
+  end
   
   class Scope
     def initialize(user, scope)

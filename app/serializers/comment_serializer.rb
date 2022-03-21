@@ -1,5 +1,6 @@
 class CommentSerializer < ActiveModel::Serializer
   attributes :id, :creator, :body
+  has_many :reactions
   has_many :replies
 
   def creator

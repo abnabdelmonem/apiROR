@@ -4,9 +4,9 @@ user can see all his posts and only published posts of others /***/
 admin can see all posts published or not published /***/
 comments on posts /***/
 reply for comments /***/
-reactions on posts
-reactions on comments
-reactions on reply
+reactions on posts /***/
+reactions on comments /***/
+reactions on reply /***/
 user can delete his own comments and replys /***/
 user can delete comments and replys on his posts /***/
 admin can delete any comment or reply /***/

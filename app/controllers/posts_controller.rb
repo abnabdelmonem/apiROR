@@ -11,7 +11,7 @@ class PostsController < ApplicationController
   # GET /posts/1
   def show
     authorize @post
-    render json: @post, include: ['comments', 'comments.replies','reactions']
+    render json: @post, include: ['comments', 'comments.replies']
   end
 
   # POST /posts
